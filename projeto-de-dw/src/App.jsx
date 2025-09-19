@@ -1,13 +1,11 @@
-import './App.css'
+import "./styles/global.css";
+import "./styles/theme.css";
+import Gerador from './components/Gerador.jsx';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
     <>
-      
+      <Gerador />
     </>
-  )
+  );
 }
-
-export default App
