@@ -15,6 +15,14 @@ body {
     font-size: 1.6rem;
     height: 100vh;
     display: flex;
+    margin-left: 200px;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: center;
+}
+
+div {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
 }

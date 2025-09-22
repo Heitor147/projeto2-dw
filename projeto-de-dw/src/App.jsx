@@ -1,6 +1,7 @@
 import "./styles/global.css";
 import "./styles/theme.css";
 import Gerador from './components/Gerador.jsx';
+import Agenda from './components/Agenda.jsx';
 // import { createClient } from "@supabase/supabase-js";
 import { useState } from "react";
 
@@ -21,13 +22,11 @@ export default function App() {
   // } 
 
   return (
-    <>
+    <div>
       <Gerador />
-
       <br />
-
-      
-    </>
+      <Agenda />
+    </div>
     
     // <div>
       // <button onClick={consultaTarefas}>Teste</button>

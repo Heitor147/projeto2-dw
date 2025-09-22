@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import "/src/styles/gerador.css";
 
 export default function Gerador() {
+  const [inputNumero, setInputNumero] = useState("");
+  const [inputMensagem, setInputMensagem] = useState("");
 
-  const [inputNumero, setInputNumero] = useState('');
-  const [inputMensagem, setInputMensagem] = useState('');
-
-    const formatPhone = (value) => {
+  const formatPhone = (value) => {
     const digits = value.replace(/\D/g, "").slice(0, 11);
 
     if (digits.length <= 2) {
@@ -34,8 +33,8 @@ export default function Gerador() {
         maxLength={15}
       />
       <p className="texto">Mensagem (opcional)</p>
-      <input 
-        type="text" 
+      <input
+        type="text"
         value={inputMensagem}
         onChange={(e) => setInputMensagem(e.target.value)}
         placeholder="Digite sua mensagem aqui..."

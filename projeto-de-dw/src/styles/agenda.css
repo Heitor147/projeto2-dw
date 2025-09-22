@@ -1,0 +1,84 @@
+.container {
+  background-color: var(--gray-100);
+  padding: 8rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo {
+  color: var(--primary);
+}
+
+.subtitulo {
+  color: var(--primary-dark);
+}
+
+.texto {
+  color: var(--gray-900);
+}
+
+li {
+  color: var(--gray-900);
+}
+
+.botaoContainer {
+  display: flex;
+  padding: 1rem;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.botao {
+  padding: 2rem;
+  margin: 1rem;
+  background-color: var(--primary);
+  color: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8rem;
+  font-weight: bold;
+}
+
+.buttonedit {
+    background-color:gray;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.buttonremove {
+    background-color:darkred;
+}
+
+.form-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* distância entre os campos */
+  margin-bottom: 2rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  color: var(--gray-900);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.form-field input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.form-field input:focus {
+  border-color: #6b46c1; /* lilás LGBT vibes */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.3);
+}
