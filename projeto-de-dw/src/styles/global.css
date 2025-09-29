@@ -26,3 +26,16 @@ div {
     flex-wrap: nowrap;
     gap: 10px;
 }
+
+h1 {
+    color: var(--primary);
+    font-size: 3.2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    flex-direction: column;
+}

@@ -24,8 +24,17 @@ const formatPhone = (value = "") => {
   return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`; // covers lengths 7..10
 };
 
-export default function Agenda() {
-  const [contatos, setContatos] = useState(() => {
+export default function Agenda({
+  contatos: contatosProp, // lista controlada (vinda do App)
+  onCreate,               // async ({ name, phone_number }) => contatoCriado
+  onUpdate,               // async (id, { name, phone_number }) => contatoAtualizado
+  onDelete,               // async (id) => boolean
+  onRefresh,              // () => void
+  loading = false,
+  error = null,
+}) {
+  // Estado local para modo não-controlado (fallback: localStorage)
+  const [contatosLocal, setContatosLocal] = useState(() => {
     if (typeof window === "undefined") return [];
     const raw = localStorage.getItem("MeusContatos");
     const parsed = safeParseJSON(raw);
@@ -33,28 +42,30 @@ export default function Agenda() {
   });
 
   const [inputNome, setInputNome] = useState("");
-  const [inputTelefone, setInputTelefone] = useState(""); // mantém valor formatado pra UX
+  const [inputTelefone, setInputTelefone] = useState("");
   const [editContatoId, setEditContatoId] = useState(null);
 
-  // Sincroniza com localStorage (seguro)
+  // Controlado quando contatosProp é fornecido
+  const isControlled = Array.isArray(contatosProp);
+  const contatos = isControlled ? contatosProp : contatosLocal;
+
+  // Sincroniza com localStorage apenas no modo não-controlado
   useEffect(() => {
+    if (isControlled) return;
     try {
-      localStorage.setItem("MeusContatos", JSON.stringify(contatos));
+      localStorage.setItem("MeusContatos", JSON.stringify(contatosLocal));
     } catch (err) {
       console.error("Erro salvando contatos no localStorage:", err);
     }
-  }, [contatos]);
+  }, [contatosLocal, isControlled]);
 
   const validarContato = (nome, digits) => {
     if (!nome) {
       alert("Por favor, insira um nome.");
       return false;
     }
-    // validação mínima: DDD + número (ajuste conforme necessidade)
     if (digits.length < 8) {
-      alert(
-        "Por favor, insira um número de telefone válido (mínimo 8 dígitos)."
-      );
+      alert("Por favor, insira um número de telefone válido (mínimo 8 dígitos).");
       return false;
     }
     return true;
@@ -65,18 +76,23 @@ export default function Agenda() {
       ? crypto.randomUUID()
       : Date.now().toString();
 
-  const adicionarContato = () => {
+  const handleNumeroChange = (e) => {
+    setInputTelefone(formatPhone(e.target.value));
+  };
+
+  // Adiciona/Salva no modo controlado (Supabase) ou local (fallback)
+  const adicionarContato = async () => {
     const nome = inputNome.trim();
     const digits = getDigits(inputTelefone);
     if (!validarContato(nome, digits)) return;
 
-    const novoContato = {
-      id: gerarId(),
-      name: nome,
-      phone: digits, // salvo como string só com dígitos
-    };
+    if (isControlled && onCreate) {
+      await onCreate({ name: nome, phone_number: digits });
+    } else {
+      const novoContato = { id: gerarId(), name: nome, phone_number: digits };
+      setContatosLocal((prev) => [...prev, novoContato]);
+    }
 
-    setContatos((prev) => [...prev, novoContato]);
     setInputNome("");
     setInputTelefone("");
   };
@@ -86,44 +102,47 @@ export default function Agenda() {
     if (!contato) return;
     setEditContatoId(id);
     setInputNome(contato.name);
-    setInputTelefone(formatPhone(contato.phone)); // mostra formatado no input
+    setInputTelefone(formatPhone(contato.phone_number));
   };
 
-  const salvarEdicaoContato = () => {
+  const salvarEdicaoContato = async () => {
     const nome = inputNome.trim();
     const digits = getDigits(inputTelefone);
     if (editContatoId === null) return;
     if (!validarContato(nome, digits)) return;
 
-    setContatos((prev) =>
-      prev.map((c) =>
-        c.id === editContatoId ? { ...c, name: nome, phone: digits } : c
-      )
-    );
+    if (isControlled && onUpdate) {
+      await onUpdate(editContatoId, { name: nome, phone_number: digits });
+    } else {
+      setContatosLocal((prev) =>
+        prev.map((c) =>
+          c.id === editContatoId ? { ...c, name: nome, phone_number: digits } : c
+        )
+      );
+    }
 
     setEditContatoId(null);
     setInputNome("");
     setInputTelefone("");
   };
 
-  const removerContato = (id) => {
+  const removerContato = async (id) => {
     const contato = contatos.find((c) => c.id === id);
-    const confirmMsg = contato
-      ? `Remover ${contato.name}?`
-      : "Remover contato?";
+    const confirmMsg = contato ? `Remover ${contato.name}?` : "Remover contato?";
     if (!window.confirm(confirmMsg)) return;
-    setContatos((prev) => prev.filter((c) => c.id !== id));
-  };
 
-  const handleNumeroChange = (e) => {
-    setInputTelefone(formatPhone(e.target.value));
+    if (isControlled && onDelete) {
+      await onDelete(id);
+    } else {
+      setContatosLocal((prev) => prev.filter((c) => c.id !== id));
+    }
   };
 
   // permite Enter para adicionar/editar
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editContatoId !== null) salvarEdicaoContato();
-    else adicionarContato();
+    if (editContatoId !== null) await salvarEdicaoContato();
+    else await adicionarContato();
   };
 
   return (
@@ -162,17 +181,31 @@ export default function Agenda() {
         </div>
 
         {editContatoId !== null ? (
-          <button type="submit" className="btn salvar">
-            Salvar Edição
+          <button type="submit" className="btn salvar" disabled={loading}>
+            {loading ? "Salvando..." : "Salvar Edição"}
           </button>
         ) : (
-          <button type="submit" className="btn adicionar">
-            Adicionar Contato
+          <button type="submit" className="btn adicionar" disabled={loading}>
+            {loading ? "Adicionando..." : "Adicionar Contato"}
+          </button>
+        )}
+
+        {onRefresh && (
+          <button
+            type="button"
+            className="btn"
+            onClick={onRefresh}
+            disabled={loading}
+            style={{ marginLeft: 8 }}
+          >
+            {loading ? "Atualizando..." : "Recarregar"}
           </button>
         )}
       </form>
 
       <h2 className="subtitulo">Contatos</h2>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {contatos.length === 0 ? (
         <p className="vazio">Nenhum contato ainda — adiciona aí!</p>
@@ -183,7 +216,7 @@ export default function Agenda() {
               <div className="contato-dados">
                 <strong className="contato-nome">{contato.name}</strong>
                 <span className="contato-telefone">
-                  {formatPhone(contato.phone)}
+                  {formatPhone(contato.phone_number)}
                 </span>
               </div>
 
@@ -193,6 +226,7 @@ export default function Agenda() {
                   className="buttonedit"
                   onClick={() => editarContato(contato.id)}
                   aria-label={`Editar ${contato.name}`}
+                  disabled={loading}
                 >
                   Editar
                 </button>
@@ -202,6 +236,7 @@ export default function Agenda() {
                   className="buttonremove"
                   onClick={() => removerContato(contato.id)}
                   aria-label={`Remover ${contato.name}`}
+                  disabled={loading}
                 >
                   Remover
                 </button>
