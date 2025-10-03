@@ -104,12 +104,12 @@ export default function App() {
 
   return (
     <div>
+      <div className="div-titulo">
+              <h1>App</h1>
+      </div>
 
-      <h1>App</h1>
-
+      
       <Gerador />
-
-      <br />
 
       <Agenda
         contatos={contatos}
@@ -120,7 +120,6 @@ export default function App() {
         loading={loading}
         error={error}
       />
-
     </div>
   );
 }

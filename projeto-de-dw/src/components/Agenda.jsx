@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "/src/styles/agenda.css"; // ajuste o caminho se necessário
+import styles from "./Agenda.module.css";
 
 // Helper: parse seguro do localStorage
 const safeParseJSON = (str) => {

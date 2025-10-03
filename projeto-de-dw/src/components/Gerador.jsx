@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "/src/styles/gerador.css";
+import styles from "./Gerador.module.css";
 
 const onlyDigits = (str = "") => String(str).replace(/\D/g, "");
 
