@@ -18,24 +18,28 @@ export default function App() {
   const supabase = createClient(URL, KEY);
 
   // READ
-  const listarContatos = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data, error } = await supabase
-        .from(TABLE)
-        .select("*")
-        .order("id", { ascending: true }); // troque a coluna de ordenação se preferir
+  useEffect(() => {
+    const listarContatos = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const { data, error } = await supabase
+          .from(TABLE)
+          .select("*")
+          .order("id", { ascending: true }); 
 
-      if (error) throw error;
-      setContatos(data ?? []);
-    } catch (err) {
-      console.error("Erro ao listar contatos:", err);
-      setError("Não foi possível carregar os contatos.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (error) throw error;
+        setContatos(data ?? []);
+      } catch (err) {
+        console.error("Erro ao listar contatos:", err);
+        setError("Não foi possível carregar os contatos.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    listarContatos();
+  }, [setLoading, setError, setContatos, supabase, TABLE]);
 
   // CREATE
   const criarContato = async ({ name, phone_number }) => {
@@ -96,11 +100,6 @@ export default function App() {
       return false;
     }
   };
-
-  useEffect(() => {
-    listarContatos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div>
