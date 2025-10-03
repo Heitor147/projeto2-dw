@@ -3,7 +3,7 @@ import "./styles/theme.css";
 import Gerador from "./components/Gerador.jsx";
 import Agenda from "./components/Agenda.jsx";
 import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export default function App() {
   const [contatos, setContatos] = useState([]);
@@ -18,27 +18,23 @@ export default function App() {
   const supabase = createClient(URL, KEY);
 
   // READ
-  useEffect(() => {
-    const listarContatos = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const { data, error } = await supabase
-          .from(TABLE)
-          .select("*")
-          .order("id", { ascending: true }); 
+  const listarContatos = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { data, error } = await supabase
+        .from(TABLE)
+        .select("*")
+        .order("id", { ascending: true }); 
 
-        if (error) throw error;
-        setContatos(data ?? []);
-      } catch (err) {
-        console.error("Erro ao listar contatos:", err);
-        setError("Não foi possível carregar os contatos.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    listarContatos();
+      if (error) throw error;
+      setContatos(data ?? []);
+    } catch (err) {
+      console.error("Erro ao listar contatos:", err);
+      setError("Não foi possível carregar os contatos.");
+    } finally {
+      setLoading(false);
+    }
   }, [setLoading, setError, setContatos, supabase, TABLE]);
 
   // CREATE
@@ -100,6 +96,10 @@ export default function App() {
       return false;
     }
   };
+
+  useEffect(() => {
+    listarContatos();
+  }, [listarContatos]);
 
   return (
     <div>
