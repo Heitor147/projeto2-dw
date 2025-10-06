@@ -1,0 +1,199 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f4f4f9;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color:#45a049;
+}
+
+h2 {
+  color:#45a049;
+}
+
+.header p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.container {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 350px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box; 
+}
+
+textarea {
+    resize: vertical;
+}
+
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; 
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-add, .btn-whatsapp {
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.btn-add:hover, .btn-whatsapp:hover {
+  background-color: #45a049;
+}
+
+.btn-icon {
+  width: auto;
+  padding: 8px;
+  margin: 0 5px;
+}
+
+.btn-edit {
+  background-color: #2196F3;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #0b7dda;
+}
+
+.btn-remove {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-remove:hover {
+  background-color: #da190b;
+}
+
+.btn-save {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: #9E9E9E;
+  color: white;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 0.9em;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.contatos-list h3 {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.contato-item {
+  border: 1px solid #f0f0f0;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+.contato-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contato-info span {
+  flex: 1;
+}
+
+.contato-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.contato-edit-form {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contato-edit-form input {
+  margin-bottom: 5px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.contato-edit-form .error-message {
+    width: 100%;
+}
+
+.link-output {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.link-output a {
+  word-break: break-all;
+  color: #4CAF50;
+  font-weight: 500;
+  display: block;
+  margin: 10px 0 20px 0;
+}
+
+@media (max-width: 800px) {
+  .content-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 500px;
+  }
+}
